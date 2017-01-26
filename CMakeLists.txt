@@ -122,9 +122,9 @@ include_directories(${_include_dirs})
 # different directory layout
 add_definitions(-DEWSJS_STANDALONE_SPIDERMONKEY)
 
-add_executable(js24 main.cpp)
-target_link_libraries(js24 ${_link_libs})
-set_target_properties(js24 PROPERTIES
+add_executable(run main.cpp)
+target_link_libraries(run ${_link_libs})
+set_target_properties(run PROPERTIES
     LINKER_LANGUAGE CXX
     COMPILE_FLAGS "${SANITIZE_CXXFLAGS}"
     LINK_FLAGS "${SANITIZE_LDFLAGS}")
