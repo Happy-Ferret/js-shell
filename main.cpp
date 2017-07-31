@@ -75,14 +75,11 @@ JSBool log_impl(JSContext *cx, unsigned argc, JS::Value *vp) {
 JSFunctionSpec global_functions[] = {JS_FS("log", log_impl, 0, 0), JS_FS_END};
 
 #ifdef USE_REMOTE_DEBUGGER
-// Component responsible for loading script's source code if
-// the JS engine
+// Component responsible for loading script's source code if the JS engine
 // cannot provide it.
 //
-// Scripts are loaded twice, by the actual JS interpreter
-// and by the
-// debugger to show the source code when debugging. This is
-// about the latter
+// Scripts are loaded twice, by the actual JS interpreter and by the debugger
+// to show the source code when debugging. This is about the latter
 class ScriptLoader final : public JSR::IJSScriptLoader {
 public:
   int load(JSContext *cx, const std::string &path, std::string &script) {
@@ -115,9 +112,8 @@ int run(JSContext *cx, const std::string &filename) {
   JSR::JSDbgEngineOptions engine_options;
   engine_options.setSourceCodeDisplacement(-1);
 
-  // Create debugger and install it. Scripts are suspended
-  // as soon as
-  // first 'debugger;' statement is reached
+  // Create debugger and install it. Scripts are suspended as soon as first
+  // 'debugger;' statement is reached
   JSR::JSRemoteDebugger debugger(debugger_config);
   if (debugger.install(cx, filename, engine_options) != JSR_ERROR_NO_ERROR) {
     return 1;
@@ -144,25 +140,22 @@ int run(JSContext *cx, const std::string &filename) {
   // Enter the new global object's compartment
   JSAutoCompartment ac(cx, global);
 
-  // Populate the global object with the standard globals,
-  // like Object
-  // and Array
+  // Populate the global object with the standard globals, like Object and
+  // Array
   if (!JS_InitStandardClasses(cx, global)) {
     return 1;
   }
 
-  // Your application code here. This may include JSAPI
-  // calls to create
-  // your own custom JS objects and run scripts
+  // Your application code here. This may include JSAPI calls to create your
+  // own custom JS objects and run scripts
 
   if (!JS_DefineFunctions(cx, global, global_functions)) {
     return 1;
   }
 
 #ifdef USE_REMOTE_DEBUGGER
-  // Register newly created global object into the debugger
-  // in order to
-  // make it debug-able.
+  // Register newly created global object into the debugger in order to make it
+  // debug-able.
   if (debugger.addDebuggee(cx, global) != JSR_ERROR_NO_ERROR) {
     return 1;
   }
@@ -224,12 +217,9 @@ int main(int argc, const char **argv) {
 
 #ifdef USE_REMOTE_DEBUGGER
 
-  // Setting a higher stack (recursion) limit is needed in
-  // order to have
-  // sufficient stack size when objects are registered into
-  // the debugger.
-  // Otherwise we could get a "too much recursion" error
-  // when calling
+  // Setting a higher stack (recursion) limit is needed in order to have
+  // sufficient stack size when objects are registered into the debugger.
+  // Otherwise we could get a "too much recursion" error when calling
   // debugger.addDebuggee()
   const std::size_t max_stack_size = 128 * sizeof(std::size_t) * 1024;
   JS_SetNativeStackQuota(rt, max_stack_size);
@@ -260,4 +250,4 @@ int main(int argc, const char **argv) {
 #pragma warning(pop)
 #endif
 
-// vim:et ts=4 sw=4 noic cc=100
+// vim:et ts=4 sw=4
